@@ -7,15 +7,31 @@
 
 import Foundation
 import CoreGraphics
+import Cocoa
 
 final class InputController {
     static let shared = InputController()
     
     private init() {}
     
+    func checkAccessibilityPermissions() {
+        let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
+        let accessibilityEnabled = AXIsProcessTrustedWithOptions(options)
+        
+        if accessibilityEnabled {
+            print("✅ Accessibility permissions are granted.")
+        } else {
+            print("❌ Accessibility permissions are missing! Go to System Settings > Privacy & Security > Accessibility and allow access.")
+        }
+    }
+    
     func moveMouse(to point: CGPoint) {
         let event = CGEvent(mouseEventSource: nil, mouseType: .mouseMoved, mouseCursorPosition: point, mouseButton: .left)
-        event?.post(tap: .cghidEventTap)
+        if let event = event {
+            event.post(tap: .cghidEventTap)
+        } else {
+            print("Error creating event")
+        }
     }
     
     func clickMouse(at point: CGPoint) {

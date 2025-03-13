@@ -76,7 +76,7 @@ struct ChatView: View {
                         }
                     
                     Button(action: {
-                        InputController.shared.moveMouse(to: CGPoint(x: 300, y: 300))
+                        InputController.shared.moveMouse(to: CGPoint(x: 100, y: 100))
 //                        Task {
 //                            await viewModel.sendMessage()
 //                        }
@@ -109,6 +109,9 @@ struct ChatView: View {
                 }
                 .padding()
             }
+        }
+        .onAppear {
+            InputController.shared.checkAccessibilityPermissions()
         }
     }
 }
