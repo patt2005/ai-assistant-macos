@@ -11,6 +11,7 @@ import SwiftUI
 final class ChatViewModel: ObservableObject {
     @Published var messages: [ChatMessage] = []
     @Published var inputText: String = ""
+    @Published var image: Image?
     
     @MainActor
     func sendMessage() async {
@@ -61,40 +62,26 @@ struct ChatView: View {
                 
                 HStack {
                     TextField("Type here...", text: $viewModel.inputText)
-                        .padding(.leading, 12)
-                        .padding(.vertical, 10)
-                        .background(Color.gray)
-                        .foregroundColor(.white)
-                        .font(.system(size: 16))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                        .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.5), lineWidth: 1))
-                        .textFieldStyle(PlainTextFieldStyle())
-                        .onSubmit {
-                            Task {
-                                await viewModel.sendMessage()
-                            }
+                    .padding(.leading, 12)
+                    .padding(.vertical, 10)
+                    .background(Color.gray)
+                    .foregroundColor(.white)
+                    .font(.system(size: 16))
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.white.opacity(0.5), lineWidth: 1))
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .onSubmit {
+                        Task {
+                            await viewModel.sendMessage()
                         }
+                    }
                     
                     Button(action: {
-                        InputController.shared.moveMouse(to: CGPoint(x: 100, y: 100))
-//                        Task {
-//                            await viewModel.sendMessage()
+//                        let nsImage = InputController.shared.captureScreenWithCGDisplay()
+//                        
+//                        if let nsImage = nsImage {
+//                            viewModel.image = Image(nsImage: nsImage)
 //                        }
-                        Task {
-//                            for i in 0..<10 {
-//                                if i == 7 {
-//                                    try? await Task.sleep(nanoseconds: 500_000_000)
-//                                    InputController.shared.clickMouse(at: CGPoint(x: i * 9, y: i * 9))
-//                                    try? await Task.sleep(nanoseconds: 500_000_000)
-//                                    InputController.shared.clickMouse(at: CGPoint(x: i * 9, y: i * 9))
-//                                } else {
-//                                    try? await Task.sleep(nanoseconds: 500_000_000)
-//                                    InputController.shared.moveMouse(to: CGPoint(x: i * 9, y: i * 9))
-//                                }
-//                            }
-                            
-//                            InputController.shared.typeString("Hello Peter!")
-                        }
                     }) {
                         Image(systemName: "paperplane.fill")
                             .resizable()
@@ -109,9 +96,17 @@ struct ChatView: View {
                 }
                 .padding()
             }
+            
+            if let image = viewModel.image {
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300, height: 300)
+            }
         }
         .onAppear {
-            InputController.shared.checkAccessibilityPermissions()
+            InputController.shared.checkScreenRecordingPermissions()
+//            InputController.shared.checkAccessibilityPermissions()
         }
     }
 }

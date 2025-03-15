@@ -31,35 +31,30 @@ class OpenAiApi {
     }
     
     func getChatResponse(prompt: String) async throws -> AsyncThrowingStream<String, Error> {
-        guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else { throw URLError(.badURL) }
+        guard let url = URL(string: "https://dashscope-intl.aliyuncs.com/compatible-mode/v1/chat/completions") else { throw URLError(.badURL) }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         
         let headers = [
             "Content-Type": "application/json",
-            "Authorization": "Bearer \(Constants.shared.openAiApiKey)"
+            "Authorization": "Bearer \(Constants.shared.qwenAiApi)"
         ]
         
         let messages: [[String: Any]] = [
             [
-                "role": "developer",
-                "content": "You are an intelligent personal AI assistant running on macOS. Your goal is to help users with their daily tasks, provide accurate answers, and assist with coding, productivity, and general inquiries. You should be concise, helpful, and always maintain a friendly and professional tone. If a request involves actions outside your capabilities, politely inform the user."
+                "role": "assistant",
+                "content": [["type": "text", "text": "You are an intelligent personal AI assistant running on macOS. Your goal is to help users with their daily tasks, provide accurate answers, and assist with coding, productivity, and general inquiries. You should be concise, helpful, and always maintain a friendly and professional tone. If a request involves actions outside your capabilities, politely inform the user."]]
             ],
             [
                 "role": "user",
-                "content": prompt
+                "content": [["type": "text", "text": prompt]]
             ]
         ]
         
         let requestBody: [String: Any] = [
-            "model": "gpt-4o-mini",
-            "max_tokens": 1024,
+            "model": "qwen-vl-max",
             "messages": messages,
-            "stop": [
-                "\n\n\n",
-                "<|im_end|>"
-            ],
             "stream": true,
         ]
         

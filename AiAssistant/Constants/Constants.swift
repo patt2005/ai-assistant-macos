@@ -12,7 +12,7 @@ final class Constants {
     
     private init () {}
     
-    let openAiApiKey = ""
+    let qwenAiApi = ""
 }
 
 enum JsonError: Error {

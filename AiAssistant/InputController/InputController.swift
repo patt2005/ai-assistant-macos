@@ -8,11 +8,51 @@
 import Foundation
 import CoreGraphics
 import Cocoa
+import ScreenCaptureKit
 
 final class InputController {
     static let shared = InputController()
     
     private init() {}
+    
+    func checkScreenRecordingPermissions() {
+        if CGPreflightScreenCaptureAccess() {
+            DispatchQueue.main.async {
+                let alert = NSAlert()
+                alert.messageText = "Screen Recording Permission Required"
+                alert.informativeText = "To capture the screen, enable screen recording in System Settings → Privacy & Security → Screen Recording."
+                alert.alertStyle = .warning
+                alert.addButton(withTitle: "Open Settings")
+                alert.addButton(withTitle: "Cancel")
+                
+                let response = alert.runModal()
+                
+                if response == .alertFirstButtonReturn {
+                    self.openSystemSettings()
+                }
+            }
+        }
+    }
+    
+    private func captureWithScreenCaptureKit() -> NSImage? {
+        return nil
+    }
+    
+    private func captureWithCGImage() -> NSImage? {
+        return nil
+    }
+    
+    func captureScreen() -> NSImage? {
+        if #available(macOS 15.0, *) {
+            return captureWithScreenCaptureKit()
+        }
+        return captureWithCGImage()
+    }
+    
+    private func openSystemSettings() {
+        let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!
+        NSWorkspace.shared.open(url)
+    }
     
     func checkAccessibilityPermissions() {
         let options: NSDictionary = [kAXTrustedCheckOptionPrompt.takeUnretainedValue() as String: true]
