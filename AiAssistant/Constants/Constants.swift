@@ -13,6 +13,7 @@ final class Constants {
     private init () {}
     
     let qwenAiApi = ""
+    let applicationId = "5b689da750f5434587990496488a8e00"
 }
 
 enum JsonError: Error {
@@ -22,4 +23,9 @@ enum JsonError: Error {
 enum ChatMessageError: Error {
     case invalidHttpResponse
     case invalidData
+}
+
+enum InputType: String, Decodable {
+    case mouse = "mouse"
+    case keyboard = "keyboard"
 }

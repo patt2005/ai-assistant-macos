@@ -107,6 +107,9 @@
 			);
 			mainGroup = 8140FE272D7745750032ED04;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				81B893D72D86184800332311 /* XCRemoteSwiftPackageReference "swift-screencapture" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8140FE312D7745750032ED04 /* Products */;
 			projectDirPath = "";
@@ -280,7 +283,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.goat.assistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -313,7 +316,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MACOSX_DEPLOYMENT_TARGET = 12.0;
+				MACOSX_DEPLOYMENT_TARGET = 12.4;
 				MARKETING_VERSION = 1.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.goat.assistant;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -344,6 +347,17 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		81B893D72D86184800332311 /* XCRemoteSwiftPackageReference "swift-screencapture" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nirix/swift-screencapture.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 	};
 	rootObject = 8140FE282D7745750032ED04 /* Project object */;
 }
