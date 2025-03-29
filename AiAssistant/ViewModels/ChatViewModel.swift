@@ -31,13 +31,13 @@ final class ChatViewModel: ObservableObject {
             do {
                 let fileUrl = try await StorageApi.shared.uploadImage(image: image)
                 
-                let response = try await QwenAiApi.shared.getApiResponse(prompt: temp, imageUrl: "", screenResolution: image.size)
+                let response = try await QwenAiApi.shared.getApiResponse(prompt: temp, imageUrl: fileUrl, screenResolution: image.size)
                 messages[messages.count - 1].responseText = response.prompt
                 
                 if response.inputType == .mouse {
-                    let point = CGPoint(x: response.mouseX ?? 0, y: response.mouseY ?? 0)
+                    let point = CGPoint(x: (response.mouseX ?? 0 * image.size.width), y: (response.mouseY ?? 0 * image.size.height))
                     InputController.shared.clickMouse(at: point)
-                } else { 
+                } else {
                     guard let script = response.appleScript else { return }
                     InputController.shared.executeAppleScript(script)
                 }
