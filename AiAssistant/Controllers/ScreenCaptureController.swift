@@ -1,10 +1,3 @@
-//
-//  ScreenCaptureController.swift
-//  AiAssistant
-//
-//  Created by Petru Grigor on 15.03.2025.
-//
-
 import Foundation
 import ScreenCaptureKit
 import Cocoa
@@ -13,6 +6,12 @@ final class ScreenCaptureController {
     static let shared = ScreenCaptureController()
     
     private init() {}
+    
+    func openScreenRecordingSettings() {
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture") {
+            NSWorkspace.shared.open(url)
+        }
+    }
     
     @MainActor
     private func captureWithScreenCaptureKit() async -> NSImage? {

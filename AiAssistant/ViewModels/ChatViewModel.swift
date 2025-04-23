@@ -1,51 +1,41 @@
-//
-//  ChatViewModel.swift
-//  AiAssistant
-//
-//  Created by Petru Grigor on 16.03.2025.
-//
-
 import Foundation
 import SwiftUI
 
 final class ChatViewModel: ObservableObject {
-    @Published var messages: [ChatMessage] = []
     @Published var inputText: String = ""
-    @Published var image: Image?
+    @Published var isLoading: Bool = false
     
-    func scrollToBottom(proxy: ScrollViewProxy) {
-        withAnimation {
-            proxy.scrollTo("BottomPadding")
-        }
-    }
+    @ObservedObject private var appState = AppState.shared
     
     @MainActor
     func sendMessage() async {
+        if !Constants.shared.canSendMessage {
+            appState.showLimitReachedPopup = true
+            return
+        }
+        
         let temp = inputText
         inputText = ""
+        isLoading = true
         
-        let message = ChatMessage(id: UUID(), sendText: temp)
-        self.messages.append(message)
+        let message = ChatMessage(id: UUID(), text: temp, type: .user)
+        appState.messages.append(message)
         
-        if let image = await ScreenCaptureController.shared.captureScreenshot() {
-            do {
-                let fileUrl = try await StorageApi.shared.uploadImage(image: image)
-                
-                let response = try await QwenAiApi.shared.getApiResponse(prompt: temp, imageUrl: fileUrl, screenResolution: image.size)
-                messages[messages.count - 1].responseText = response.prompt
-                
-                if response.inputType == .mouse {
-                    let point = CGPoint(x: (response.mouseX ?? 0 * image.size.width), y: (response.mouseY ?? 0 * image.size.height))
-                    InputController.shared.clickMouse(at: point)
-                } else {
-                    guard let script = response.appleScript else { return }
-                    InputController.shared.executeAppleScript(script)
-                }
-            } catch {
-                print("Ther was an error: \(error.localizedDescription)")
-            }
-        } else {
-            print("There was an error capturing the screenshot.")
+        AppDelegate.shared.showLoadingAnimation()
+        
+        do {
+            try await ChatGptApi.shared.runComputerUseLoop(prompt: temp)
+            
+            Constants.shared.incrementFreeMessageCount()
+        } catch {
+            appState.messages.append(ChatMessage(id: UUID(), text: "There was an error processing your request. Please try again later.", type: .system))
+            appState.showNewTaskButton = true
+            bringAppToFront()
+            
+            print("Error: \(error.localizedDescription)")
         }
+        
+        AppDelegate.shared.hideLoadingAnimation()
+        isLoading = false
     }
 }

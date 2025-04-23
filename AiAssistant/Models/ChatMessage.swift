@@ -1,16 +1,9 @@
-//
-//  ChatMessage.swift
-//  AiAssistant
-//
-//  Created by Petru Grigor on 04.03.2025.
-//
-
 import Foundation
 
-final class ChatMessage: Identifiable, Hashable, Equatable, ObservableObject {
+final class ChatMessage: Identifiable, Hashable, Equatable {
     let id: UUID
-    let sendText: String
-    @Published var responseText: String?
+    let text: String
+    let type: MessageType
     
     static func == (lhs: ChatMessage, rhs: ChatMessage) -> Bool {
         return lhs.id == rhs.id
@@ -20,9 +13,9 @@ final class ChatMessage: Identifiable, Hashable, Equatable, ObservableObject {
         hasher.combine(id)
     }
     
-    init(id: UUID, sendText: String, responseText: String? = nil) {
-        self.sendText = sendText
-        self.responseText = responseText
+    init(id: UUID, text: String, type: MessageType) {
         self.id = id
+        self.text = text
+        self.type = type
     }
 }
